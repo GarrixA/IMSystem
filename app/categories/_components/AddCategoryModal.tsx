@@ -1,0 +1,80 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+interface AddCategoryModalProps {
+  onClose: () => void;
+}
+
+const categorySchema = z.object({
+  category: z
+    .string()
+    .nonempty("Category is required")
+    .min(2, "Category name must be at least 2 characters long"),
+});
+
+type CategoryForm = z.infer<typeof categorySchema>;
+
+const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ onClose }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CategoryForm>({
+    resolver: zodResolver(categorySchema),
+  });
+
+  const onSubmit = (data: CategoryForm) => {
+    console.log("New Category:", data);
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          Add New Category
+        </h2>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label className="block text-gray-700 font-medium">
+              Category Name
+            </label>
+            <input
+              type="text"
+              {...register("category")}
+              className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-blue-400"
+              placeholder="Enter category name"
+            />
+            {errors.category && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.category.message}
+              </p>
+            )}
+          </div>
+
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            >
+              Add Category
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default AddCategoryModal;
