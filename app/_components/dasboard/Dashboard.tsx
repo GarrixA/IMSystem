@@ -1,15 +1,18 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
-import { FiUsers, FiBox, FiUserCheck } from "react-icons/fi";
-import ReactApexChart from "react-apexcharts";
+
 import { ApexOptions } from "apexcharts";
+import dynamic from "next/dynamic";
+import { FiBox, FiUserCheck, FiUsers } from "react-icons/fi";
 import StatCard from "./StatCard";
 
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+});
+
 const Dashboard = () => {
-  const [totalItems, setTotalItems] = useState(120);
-  const [totalUsers, setTotalUsers] = useState(45);
-  const [totalBorrowers, setTotalBorrowers] = useState(30);
+  const totalItems = 120;
+  const totalUsers = 45;
+  const totalBorrowers = 30;
 
   const borrowingStats = {
     labels: ["Damaged", "Returned", "Available"],
@@ -26,37 +29,15 @@ const Dashboard = () => {
       type: "bar",
       height: "100%",
       stacked: false,
-      toolbar: {
-        show: false,
-      },
+      toolbar: { show: false },
     },
     plotOptions: {
-      bar: {
-        horizontal: false,
-        borderRadius: 8,
-      },
+      bar: { horizontal: false, borderRadius: 8 },
     },
-    dataLabels: {
-      enabled: false,
-    },
-    xaxis: {
-      categories: borrowingStats.labels,
-    },
-    yaxis: {
-      title: {
-        text: "Number of Items",
-      },
-    },
-    responsive: [
-      {
-        breakpoint: 600,
-        options: {
-          chart: {
-            height: 350,
-          },
-        },
-      },
-    ],
+    dataLabels: { enabled: false },
+    xaxis: { categories: borrowingStats.labels },
+    yaxis: { title: { text: "Number of Items" } },
+    responsive: [{ breakpoint: 600, options: { chart: { height: 350 } } }],
   };
 
   return (

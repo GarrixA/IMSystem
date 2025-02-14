@@ -3,6 +3,7 @@
 import { conditionColors, statusColors } from "@/utils/customStyles";
 import { items } from "@/utils/data";
 import clsx from "clsx";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -47,9 +48,11 @@ const ItemDetails = () => {
               key={index}
               className="overflow-hidden rounded-lg shadow-lg transform transition-transform hover:scale-105"
             >
-              <img
+              <Image
                 src={image.src}
                 alt={`${item.name} image ${index + 1}`}
+                width={320}
+                height={320}
                 className="w-full h-48 object-cover"
               />
             </div>

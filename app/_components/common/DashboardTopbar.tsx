@@ -4,9 +4,9 @@ const DashboardTopbar = () => {
       <h1 className="text-lg font-semibold text-gray-800">
         Inventory Dashboard
       </h1>
-      <button className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg">
+      {/* <button className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg">
         Profile
-      </button>
+      </button> */}
     </div>
   );
 };
