@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import AddItemModal from "./_components/AddItemModal";
+import Image from "next/image";
 
 interface CustomStylesProps {
   Available?: string;
@@ -54,9 +55,11 @@ const ItemsList = () => {
             className="transform hover:scale-105 transition-all bg-white shadow-lg rounded-lg overflow-hidden h-auto relative"
           >
             <div className="relative">
-              <img
+              <Image
                 src={item.images[0].src}
                 alt={item.name}
+                width={365}
+                height={364}
                 className="w-full h-64 object-cover"
               />
               <div className="absolute top-2 right-2 flex gap-2">
