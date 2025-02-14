@@ -33,13 +33,13 @@ const DashboardSidebar = () => {
     <div className="fixed left-0 top-0 h-full w-64 bg-gray-100 text-gray-800 shadow-md flex flex-col p-5">
       {/* Sidebar Logo */}
       <div className="flex items-center justify-center mb-6">
-        <div className="w-20 h-20 rounded-full overflow-hidden">
+        <div className="w-32 h-20 rounded-md overflow-hidden bg-red-300">
           <Image
             alt="Logo"
             width={80}
             height={80}
             src={logo}
-            className="object-cover"
+            className="object-cover w-full h-full"
           />
         </div>
       </div>

@@ -14,6 +14,7 @@ const Borrowers = () => {
       email: "john.doe@example.com",
       phoneNumber: "+1234567890",
       residenceAddress: "123 Main St, Cityville",
+      item: "Screen",
       assurerName: "Jane Doe",
       assurerContact: "+0987654321",
     },
@@ -23,6 +24,7 @@ const Borrowers = () => {
       email: "alice.smith@example.com",
       phoneNumber: "+1122334455",
       residenceAddress: "456 Elm St, Townsville",
+      item: "Laptop",
       assurerName: "Robert Smith",
       assurerContact: "+1122334456",
     },
@@ -52,6 +54,7 @@ const Borrowers = () => {
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3">Phone Number</th>
                 <th className="px-4 py-3">Residence Address</th>
+                <th className="px-4 py-3">Item</th>
                 <th className="px-4 py-3">Assurer Name</th>
                 <th className="px-4 py-3">Assurer Contact</th>
               </tr>
@@ -78,6 +81,9 @@ const Borrowers = () => {
                   </td>
                   <td className="px-4 py-3 border-b text-sm text-gray-700">
                     {borrower.residenceAddress}
+                  </td>
+                  <td className="px-4 py-3 border-b text-sm text-gray-700">
+                    {borrower.item}
                   </td>
                   <td className="px-4 py-3 border-b text-sm text-gray-700">
                     {borrower.assurerName}
