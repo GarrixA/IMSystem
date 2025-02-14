@@ -3,18 +3,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
-const borrowerSchema = z.object({
-  fullName: z.string().min(3, "Full Name must be at least 3 characters"),
-  nationalId: z.string().min(6, "National ID must be at least 6 digits"),
-  email: z.string().email("Invalid email format"),
-  phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
-  residenceAddress: z.string().min(5, "Address must be at least 5 characters"),
-  assurerName: z.string().min(3, "Assurer Name must be at least 3 characters"),
-  assurerContact: z
-    .string()
-    .min(10, "Assurer Contact must be at least 10 digits"),
-});
+import { items } from "@/utils/data";
+import { borrowerSchema } from "@/validations/formValidations";
 
 type BorrowerFormValues = z.infer<typeof borrowerSchema>;
 
@@ -43,7 +33,6 @@ const AddBorrowerModal = ({ toggleModal }: { toggleModal: () => void }) => {
           ✕
         </button>
 
-        {/* Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
@@ -147,6 +136,26 @@ const AddBorrowerModal = ({ toggleModal }: { toggleModal: () => void }) => {
               <p className="text-red-500 text-sm">
                 {errors.assurerContact.message}
               </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Item
+            </label>
+            <select
+              {...register("borrower")}
+              className="w-full border px-2 py-3 rounded"
+            >
+              <option value="">Select an item</option>
+              {items.map((item, index) => (
+                <option key={index} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+            {errors.borrower && (
+              <p className="text-red-500 text-sm">{errors.borrower.message}</p>
             )}
           </div>
 

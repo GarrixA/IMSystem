@@ -20,10 +20,10 @@ const Categories: React.FC = () => {
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold text-gray-800">Categories</h3>
           <button
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
             onClick={toggleModal}
           >
-            + Add Category
+            Add Category
           </button>
         </div>
         <ul className="divide-y divide-gray-200">

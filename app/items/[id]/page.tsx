@@ -1,35 +1,83 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { conditionColors, statusColors } from "@/utils/customStyles";
+import { items } from "@/utils/data";
+import clsx from "clsx";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+interface Item {
+  id: number;
+  name: string;
+  images: { src: string }[];
+  condition: "New" | "Good" | "Worn Out" | "Broken";
+  status: "Available" | "Damaged" | "Borrowed";
+  description: string;
+}
 
 const ItemDetails = () => {
-  const [loading, setLoading] = useState(true);
-  const [id, setId] = useState<string | null>(null);
+  const params = useParams();
+  const [item, setItem] = useState<Item | null>(null);
 
   useEffect(() => {
-    const currentUrl = window.location.pathname;
-    const pathParts = currentUrl.split("/");
-    const itemId = pathParts[pathParts.length - 1];
+    if (!params || !params.id) return;
 
-    if (itemId) {
-      setId(itemId);
-      setLoading(false);
-    }
-  }, []);
+    const itemId = parseInt(params.id as string, 10);
+    const itemData = items.find((item) => item.id === itemId);
+    setItem(itemData || null);
+  }, [params]);
 
-  if (loading) {
-    return <div>Loading...</div>;
+  if (!item) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-500">
+        Loading item details...
+      </div>
+    );
   }
 
-  const item = {
-    name: "Item " + id,
-    description: "Description of Item " + id,
-  };
-
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">{item.name}</h1>
-      <p>{item.description}</p>
+    <div className="flex items-center justify-center w-full h-full bg-white">
+      <div className="max-w-4xl w-[40vw] mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">{item.name}</h1>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {item.images.map((image, index) => (
+            <div
+              key={index}
+              className="overflow-hidden rounded-lg shadow-lg transform transition-transform hover:scale-105"
+            >
+              <img
+                src={image.src}
+                alt={`${item.name} image ${index + 1}`}
+                className="w-full h-48 object-cover"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6">
+          <p className="text-gray-700 text-lg">{item.description}</p>
+          <div className="mt-4 flex items-center space-x-4">
+            <span
+              className={clsx(
+                "px-3 py-1 text-sm font-semibold rounded-full",
+                conditionColors[item.condition]
+              )}
+            >
+              {item.condition}
+            </span>
+            <span
+              className={clsx(
+                "px-3 py-1 text-sm font-semibold rounded-full",
+                statusColors[item.status]
+              )}
+            >
+              {item.status}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
