@@ -15,7 +15,15 @@ const Dashboard = () => {
   const totalBorrowers = 30;
 
   const borrowingStats = {
-    labels: ["Damaged", "Returned", "Available"],
+    labels: [
+      "Damaged",
+      "Returned",
+      "Available",
+      "Unreturned",
+      "Lost",
+      "New",
+      "Worn out",
+    ],
     series: [
       {
         name: "Number of Items",

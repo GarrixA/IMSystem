@@ -1,11 +1,12 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { items } from "@/utils/data";
 import Link from "next/link";
 import { useState } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import AddItemModal from "./_components/AddItemModal";
 import Image from "next/image";
+import EditItemModal from "./_components/EditItemModal";
+import DeleteItemsModal from "./_components/DeleteItemsModal";
 
 interface CustomStylesProps {
   Available?: string;
@@ -17,10 +18,33 @@ interface CustomStylesProps {
   "Worn Out"?: string;
 }
 
+interface Item {
+  id: number;
+  name: string;
+  description: string;
+  condition: string;
+  status: string;
+  images: { src: string }[];
+}
+
 const ItemsList = () => {
   const [openModal, setOpenModal] = useState(false);
-  const toggleModal = () => {
-    setOpenModal(!openModal);
+  const [editModal, setEditModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null); // Item type
+
+  const toggleModal = () => setOpenModal(!openModal);
+  const toggleEditModal = () => setEditModal(!editModal);
+  const toggleDeleteModal = () => setDeleteModal(!deleteModal);
+
+  const handleDeleteConfirm = () => {
+    console.log("Item deleted!");
+    toggleDeleteModal();
+  };
+
+  const openEditModal = (item: Item) => {
+    setSelectedItem(item);
+    toggleEditModal();
   };
 
   const statusStyles: CustomStylesProps = {
@@ -48,11 +72,11 @@ const ItemsList = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-8">
         {items.map((item) => (
           <div
             key={item.id}
-            className="transform hover:scale-105 transition-all bg-white shadow-lg rounded-lg overflow-hidden h-auto relative"
+            className="bg-white _shadow rounded-lg overflow-hidden h-auto relative"
           >
             <div className="relative">
               <Image
@@ -63,14 +87,29 @@ const ItemsList = () => {
                 className="w-full h-64 object-cover"
               />
               <div className="absolute top-2 right-2 flex gap-2">
-                <button className="bg-gray-200 p-2 rounded-full hover:bg-gray-300 transition">
+                <button
+                  className="bg-gray-200 p-2 rounded-full hover:bg-gray-300 transition"
+                  onClick={() => openEditModal(item)}
+                  aria-label="Edit Item"
+                >
                   <FiEdit className="text-gray-700" />
                 </button>
-                <button className="bg-red-200 p-2 rounded-full hover:bg-red-300 transition">
+                <button
+                  className="bg-red-200 p-2 rounded-full hover:bg-red-300 transition"
+                  onClick={toggleDeleteModal}
+                  aria-label="Delete Item"
+                >
                   <FiTrash className="text-red-600" />
                 </button>
               </div>
             </div>
+
+            {editModal && selectedItem && (
+              <EditItemModal
+                toggleEditModal={toggleEditModal}
+                item={selectedItem}
+              />
+            )}
 
             <div className="p-4">
               <h2 className="text-xl font-semibold text-gray-800">
@@ -107,6 +146,12 @@ const ItemsList = () => {
       </div>
 
       {openModal && <AddItemModal toggleModal={toggleModal} />}
+      {deleteModal && (
+        <DeleteItemsModal
+          toggleDeleteModal={toggleDeleteModal}
+          onDeleteConfirm={handleDeleteConfirm}
+        />
+      )}
     </div>
   );
 };

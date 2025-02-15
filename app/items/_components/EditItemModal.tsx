@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useState } from "react";
-import Image from "next/image";
 
-const statusOptions = ["Available", "Out of Stock", "Discontinued"];
-const conditionOptions = ["New", "Used", "Refurbished"];
+const statusOptions = ["Available", "Damaged", "Borrowed"];
+const conditionOptions = ["New", "Good", "Worn Out", "Broken"];
 
 const itemSchema = z.object({
   name: z.string().min(1, "Item Name is required"),
@@ -20,8 +20,22 @@ const itemSchema = z.object({
 
 type FormValues = z.infer<typeof itemSchema>;
 
-const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
-  const [previews, setPreviews] = useState<string[]>([]);
+interface EditItemModalProps {
+  toggleEditModal: () => void;
+  item: {
+    id: number;
+    name: string;
+    description: string;
+    condition: string;
+    status: string;
+    images: { src: string }[];
+  };
+}
+
+const EditItemModal = ({ toggleEditModal, item }: EditItemModalProps) => {
+  const [previews, setPreviews] = useState<string[]>(
+    item.images.map((image) => image.src)
+  );
 
   const {
     register,
@@ -30,11 +44,17 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(itemSchema),
+    defaultValues: {
+      name: item.name,
+      description: item.description,
+      status: item.status,
+      condition: item.condition,
+      images: item.images.map((img) => new File([], img.src)),
+    },
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-
     if (files.length + previews.length > 4) {
       alert("You can only upload up to 4 images.");
       return;
@@ -44,18 +64,12 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
       ...prev,
       ...files.map((file) => URL.createObjectURL(file)),
     ]);
-    setValue(
-      "images",
-      [
-        ...(previews.map((src, i) => new File([], `file-${i}`)) || []),
-        ...files,
-      ],
-      { shouldValidate: true }
-    );
+    setValue("images", [...files], { shouldValidate: true });
   };
 
   const removeImage = (index: number) => {
     setPreviews((prev) => prev.filter((_, i) => i !== index));
+
     setValue(
       "images",
       previews
@@ -75,14 +89,14 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
     formData.append("status", data.status);
     formData.append("condition", data.condition);
 
-    console.log("New Item:", Object.fromEntries(formData.entries()));
-    toggleModal();
+    console.log("Updated Item:", Object.fromEntries(formData.entries()));
+    toggleEditModal();
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/10 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-1/2 text-black">
-        <h1 className="text-2xl font-semibold mb-4">Add Item</h1>
+        <h1 className="text-2xl font-semibold mb-4">Edit Item</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex space-x-4">
             <div className="w-1/3 pb-5 flex flex-col gap-5">
@@ -186,6 +200,7 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
                   ))}
                 </select>
               </div>
+
               <div>
                 <label htmlFor="description" className="block text-lg">
                   Description
@@ -211,11 +226,11 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
               type="submit"
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
             >
-              Add Item
+              Save Changes
             </button>
             <button
               type="button"
-              onClick={toggleModal}
+              onClick={toggleEditModal}
               className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition"
             >
               Cancel
@@ -227,4 +242,4 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
   );
 };
 
-export default AddItemModal;
+export default EditItemModal;
