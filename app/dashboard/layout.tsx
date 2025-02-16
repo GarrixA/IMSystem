@@ -3,7 +3,7 @@ import DashboardTopbar from "./_components/common/DashboardTopbar";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="h-screen flex">
+    <div className="h-screen flex bg-[#cce2f3]">
       <DashboardSidebar />
 
       <div className="flex flex-col flex-1 lg:ml-64 ml-0">

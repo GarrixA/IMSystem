@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-const protectedRoutes = ["/dashboard"];
+
 const publicRoutes = ["/login", "/signup"];
 
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  const isProtectedRoutes = protectedRoutes.includes(path);
+  const isProtectedRoutes = path.startsWith("/dashboard");
   const isPublicRoutes = publicRoutes.includes(path);
   const cookie = req.cookies.get("access_token");
 
