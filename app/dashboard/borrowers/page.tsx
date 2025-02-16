@@ -3,6 +3,7 @@
 import { useState } from "react";
 import AddBorrowerModal from "./_components/AddBorrowerModal";
 import { borrowers } from "@/utils/data";
+import { isAdmin } from "@/utils/config/isValidRole";
 
 const Borrowers = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -10,15 +11,17 @@ const Borrowers = () => {
 
   return (
     <div className="w-full h-full p-6">
-      <div className="p-8 w-full max-w-7xl mx-auto bg-white">
+      <div className="p-8 w-full max-w-7xl mx-auto bg-">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold text-gray-900">Borrower Details</h2>
-          <button
-            onClick={toggleModal}
-            className="px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-200"
-          >
-            Add Borrower
-          </button>
+          {isAdmin() && (
+            <button
+              onClick={toggleModal}
+              className="px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-200"
+            >
+              Add Borrower
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

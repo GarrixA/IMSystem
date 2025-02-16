@@ -3,7 +3,7 @@ import { users } from "@/utils/data";
 
 const Users = () => {
   return (
-    <div className="w-full h-full bg-white p-5">
+    <div className="w-full h-full p-5">
       <div className="p-6 w-full bg-white rounded-lg shadow-lg">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-semibold text-gray-800">Users</h2>

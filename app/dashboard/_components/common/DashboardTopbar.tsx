@@ -20,7 +20,7 @@ const DashboardTopbar = () => {
     setOpenLogout(!openLogout);
   };
   return (
-    <div className="fixed z-50 top-0 right-0 lg:left-64 left-0 p-2 flex justify-between items-center px-5 md:px-10 lg:px-5 bg-white">
+    <div className="fixed z-50 top-0 right-0 lg:left-[15.3rem] left-0 p-2 flex justify-between items-center px-5 md:px-10 lg:px-5 bg-[#cce2f3] shadow-sm">
       <div className="flex items-center gap-2">
         <Menu
           className="lg:hidden text-black text-2xl cursor-pointer"

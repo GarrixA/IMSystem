@@ -37,7 +37,7 @@ const ItemDetails = () => {
   }
 
   return (
-    <div className="flex items-center justify-center w-full h-full bg-white">
+    <div className="flex items-center justify-center w-full h-full bg-">
       <div className="max-w-4xl w-[40vw] mx-auto p-6 bg-white shadow-lg rounded-lg">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-gray-900">{item.name}</h1>
@@ -46,14 +46,14 @@ const ItemDetails = () => {
           {item.images.map((image, index) => (
             <div
               key={index}
-              className="overflow-hidden rounded-lg shadow-lg transform transition-transform hover:scale-105"
+              className="overflow-hidden rounded-lg _shadow transform transition-transform hover:scale-105"
             >
               <Image
                 src={image.src}
                 alt={`${item.name} image ${index + 1}`}
                 width={320}
                 height={320}
-                className="w-full h-48 object-cover"
+                className="w-full h-40 2xl:h-48 object-cover"
               />
             </div>
           ))}
