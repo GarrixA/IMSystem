@@ -133,3 +133,28 @@ export const users = [
     role: "Trainee",
   },
 ];
+
+export const borrowers = [
+  {
+    fullName: "John Doe",
+    nationalId: "1234567890",
+    email: "john.doe@example.com",
+    phoneNumber: "+1234567890",
+    residenceAddress: "123 Main St, Cityville",
+    item: "Screen",
+    assurerName: "Jane Doe",
+    assurerContact: "+0987654321",
+    serial_number: "Atsg2342sd",
+  },
+  {
+    fullName: "Alice Smith",
+    nationalId: "0987654321",
+    email: "alice.smith@example.com",
+    phoneNumber: "+1122334455",
+    residenceAddress: "456 Elm St, Townsville",
+    item: "Laptop",
+    assurerName: "Robert Smith",
+    assurerContact: "+1122334456",
+    serial_number: "Atsg2342sd",
+  },
+];
