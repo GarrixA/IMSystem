@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Layout from "./_components/Layout";
 
 export const metadata: Metadata = {
   title: "Inentory",
@@ -14,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased bg-white">
-        <Layout>{children}</Layout>
-      </body>
+      <body className="antialiased bg-white">{children}</body>
     </html>
   );
 }

@@ -16,11 +16,11 @@ const Categories: React.FC = () => {
 
   return (
     <div className="w-full h-full bg-white flex items-center justify-center">
-      <div className="p-6 w-1/2 mx-auto bg-white rounded-2xl shadow-lg border border-gray-200">
+      <div className="p-6 w-4/5 md:w-3/5 lg:w-1/2 mx-auto bg-white rounded-2xl shadow-lg border border-gray-200">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold text-gray-800">Categories</h3>
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="font-bold text-base px-2 md:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
             onClick={toggleModal}
           >
             Add Category
