@@ -21,14 +21,13 @@ export default function Home() {
         The most efficient inventory management system at your fingertips.
       </p>
       <div className="flex space-x-4">
-        {isAdmin() ||
-          (isManager() && (
-            <Link href={"/dashboard"}>
-              <button className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
-                Get Started
-              </button>
-            </Link>
-          ))}
+        {(isManager() || isAdmin()) && (
+          <Link href={"/dashboard"}>
+            <button className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+              Get Started
+            </button>
+          </Link>
+        )}
         {token ? (
           <button
             className="px-6 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition"
