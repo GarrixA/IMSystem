@@ -22,10 +22,11 @@ export default function Home() {
       </p>
       <div className="flex space-x-4">
         {(isManager() || isAdmin()) && (
-          <Link href={"/dashboard"}>
-            <button className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
-              Get Started
-            </button>
+          <Link
+            href={"/dashboard"}
+            className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+          >
+            <button>Get Started</button>
           </Link>
         )}
         {token ? (

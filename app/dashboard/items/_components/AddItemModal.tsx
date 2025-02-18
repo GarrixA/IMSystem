@@ -1,27 +1,39 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
 import Image from "next/image";
+import { toast } from "react-toastify";
+import { usePostItemMutation } from "@/store/actions/item";
+import { useAllCategoriesQuery } from "@/store/actions/categories";
 
 const statusOptions = ["Available", "Out of Stock", "Discontinued"];
 const conditionOptions = ["New", "Used", "Refurbished"];
 
 const itemSchema = z.object({
   name: z.string().min(1, "Item Name is required"),
+  title: z.string().min(1, "Item Title is required"),
   description: z.string().min(1, "Description is required"),
+  serial_number: z.string().min(5, "Serial number is required"),
   images: z
     .array(z.instanceof(File))
     .min(1, "At least one image is required")
     .max(4, "You can upload up to 4 images"),
   status: z.enum(statusOptions as [string, ...string[]]),
   condition: z.enum(conditionOptions as [string, ...string[]]),
+  categoryId: z.string().min(1, "Category is required"),
 });
 
 type FormValues = z.infer<typeof itemSchema>;
 
 const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
   const [previews, setPreviews] = useState<string[]>([]);
+  const [postItem, { isLoading }] = usePostItemMutation();
+  const { data } = useAllCategoriesQuery();
+  const categories = data?.data;
+  console.log(categories);
 
   const {
     register,
@@ -36,7 +48,7 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
     const files = Array.from(e.target.files || []);
 
     if (files.length + previews.length > 4) {
-      alert("You can only upload up to 4 images.");
+      toast.warn("You can only upload up to 4 images.");
       return;
     }
 
@@ -65,27 +77,33 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
     );
   };
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     const formData = new FormData();
     formData.append("name", data.name);
+    formData.append("title", data.title);
     formData.append("description", data.description);
-    data.images.forEach((image, index) =>
-      formData.append(`images[${index}]`, image)
-    );
+    formData.append("serial_number", data.serial_number);
+    data.images.forEach((image) => formData.append("images", image));
     formData.append("status", data.status);
     formData.append("condition", data.condition);
+    formData.append("categoryId", data.categoryId);
 
-    console.log("New Item:", Object.fromEntries(formData.entries()));
-    toggleModal();
+    try {
+      const response = await postItem(formData).unwrap();
+      toast.success(response?.message);
+      toggleModal();
+    } catch (error: any) {
+      toast.error(error?.data?.message);
+    }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-1/2 text-black">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-1/2 md:w-4/5 text-black">
         <h1 className="text-2xl font-semibold mb-4">Add Item</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex space-x-4">
-            <div className="w-1/3 pb-5 flex flex-col gap-5">
+            <div className="w-1/2 pb-5 flex flex-col gap-5">
               <label htmlFor="images" className="block text-lg">
                 Images
               </label>
@@ -133,7 +151,7 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
               </div>
             </div>
 
-            <div className="w-2/3 space-y-4">
+            <div className="w-2/3 space-y-">
               <div>
                 <label htmlFor="name" className="block text-lg">
                   Item Name
@@ -149,6 +167,70 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
                 {errors.name && (
                   <span className="text-red-500 text-sm">
                     {errors.name.message}
+                  </span>
+                )}
+              </div>
+              <div>
+                <label htmlFor="title" className="block text-lg">
+                  Item Title
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  {...register("title")}
+                  className={`w-full p-2 border rounded-md ${
+                    errors.title ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                {errors.title && (
+                  <span className="text-red-500 text-sm">
+                    {errors.title.message}
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="serial_number" className="block text-lg">
+                  Serial Number
+                </label>
+                <input
+                  type="text"
+                  id="serial_number"
+                  {...register("serial_number")}
+                  className={`w-full p-2 border rounded-md ${
+                    errors.serial_number ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                {errors.serial_number && (
+                  <span className="text-red-500 text-sm">
+                    {errors.serial_number.message}
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="category" className="block text-lg">
+                  Category
+                </label>
+                <select
+                  id="category"
+                  {...register("categoryId")}
+                  className="w-full p-3 border rounded-md text-black"
+                >
+                  <option value="">Select a Category</option>
+                  {categories?.map((category: any) => (
+                    <option
+                      key={category?.id}
+                      value={category?.id}
+                      className="text-black"
+                    >
+                      {category?.categoryName}
+                    </option>
+                  ))}
+                </select>
+                {errors?.categoryId && (
+                  <span className="text-red-500 text-sm">
+                    {errors?.categoryId?.message}
                   </span>
                 )}
               </div>
@@ -186,6 +268,7 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
                   ))}
                 </select>
               </div>
+
               <div>
                 <label htmlFor="description" className="block text-lg">
                   Description
@@ -209,9 +292,10 @@ const AddItemModal = ({ toggleModal }: { toggleModal: () => void }) => {
           <div className="flex justify-between mt-4">
             <button
               type="submit"
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+              disabled={isLoading}
             >
-              Add Item
+              {isLoading ? "Adding..." : "Add Item"}
             </button>
             <button
               type="button"

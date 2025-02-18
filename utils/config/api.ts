@@ -10,11 +10,12 @@ const baseAPI = createApi({
       const {
         appReducer: { token },
       } = getState() as RootState;
-      if (token) headers.set("authorization", `Bearer ${token}`);
+      if (token) headers.set("Authorization", `Bearer ${token}`);
       return headers;
     },
+    credentials: "include",
   }),
-  tagTypes: [],
+  tagTypes: ["categories", "items", "borrowers"],
   endpoints: () => ({}),
 });
 

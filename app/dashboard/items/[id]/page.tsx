@@ -1,34 +1,16 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { conditionColors, statusColors } from "@/utils/customStyles";
-import { items } from "@/utils/data";
-import clsx from "clsx";
-import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-
-interface Item {
-  id: number;
-  name: string;
-  images: { src: string }[];
-  condition: "New" | "Good" | "Worn Out" | "Broken";
-  status: "Available" | "Damaged" | "Borrowed";
-  description: string;
-}
+import { useSingleItemQuery } from "@/store/actions/item";
+import Image from "next/image";
 
 const ItemDetails = () => {
   const params = useParams();
-  const [item, setItem] = useState<Item | null>(null);
+  const { id } = params;
+  const { data: item, isLoading, isError } = useSingleItemQuery(String(id));
 
-  useEffect(() => {
-    if (!params || !params.id) return;
-
-    const itemId = parseInt(params.id as string, 10);
-    const itemData = items.find((item) => item.id === itemId);
-    setItem(itemData || null);
-  }, [params]);
-
-  if (!item) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen text-gray-500">
         Loading item details...
@@ -36,20 +18,37 @@ const ItemDetails = () => {
     );
   }
 
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-500">
+        Error loading item details. Please try again later.
+      </div>
+    );
+  }
+
+  if (!item) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-500">
+        Item not found.
+      </div>
+    );
+  }
+
   return (
-    <div className="flex items-center justify-center w-full h-full bg-">
-      <div className="max-w-4xl w-[40vw] mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="flex items-center justify-center w-full h-full ">
+      <div className="max-w-4xl lg:w-[40vw] mx-auto p-6 bg-white shadow-lg rounded-lg">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-gray-900">{item.name}</h1>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {item.images.map((image, index) => (
+          {item?.images?.map((image: any, index: number) => (
             <div
               key={index}
-              className="overflow-hidden rounded-lg _shadow transform transition-transform hover:scale-105"
+              className="overflow-hidden rounded-lg shadow-md transform transition-transform hover:scale-105"
             >
               <Image
-                src={image.src}
+                src={image}
                 alt={`${item.name} image ${index + 1}`}
                 width={320}
                 height={320}
@@ -62,20 +61,10 @@ const ItemDetails = () => {
         <div className="mt-6">
           <p className="text-gray-700 text-lg">{item.description}</p>
           <div className="mt-4 flex items-center space-x-4">
-            <span
-              className={clsx(
-                "px-3 py-1 text-sm font-semibold rounded-full",
-                conditionColors[item.condition]
-              )}
-            >
+            <span className="px-3 py-1 text-sm font-semibold rounded-full">
               {item.condition}
             </span>
-            <span
-              className={clsx(
-                "px-3 py-1 text-sm font-semibold rounded-full",
-                statusColors[item.status]
-              )}
-            >
+            <span className="px-3 py-1 text-sm font-semibold rounded-full">
               {item.status}
             </span>
           </div>

@@ -1,6 +1,7 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { isAdmin } from "@/utils/config/isValidRole";
-import { items } from "@/utils/data";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -8,31 +9,25 @@ import { FiEdit, FiTrash } from "react-icons/fi";
 import AddItemModal from "./_components/AddItemModal";
 import DeleteItemsModal from "./_components/DeleteItemsModal";
 import EditItemModal from "./_components/EditItemModal";
-
-interface CustomStylesProps {
-  Available?: string;
-  Damaged?: string;
-  Borrowed?: string;
-  Broken?: string;
-  Good?: string;
-  New?: string;
-  "Worn Out"?: string;
-}
+import { useAllItemsQuery } from "@/store/actions/item";
+import defaultImage from "@/public/data_images/laptops (2).webp";
 
 interface Item {
-  id: number;
+  id: string;
   name: string;
   description: string;
   condition: string;
   status: string;
-  images: { src: string }[];
+  images: string[];
 }
 
 const ItemsList = () => {
   const [openModal, setOpenModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+
+  const { data: items, isLoading, isError } = useAllItemsQuery();
 
   const toggleModal = () => setOpenModal(!openModal);
   const toggleEditModal = () => setEditModal(!editModal);
@@ -48,18 +43,21 @@ const ItemsList = () => {
     toggleEditModal();
   };
 
-  const statusStyles: CustomStylesProps = {
+  const statusStyles: any = {
     Available: "text-green-800 bg-green-200 px-2 py-1 rounded-md",
     Damaged: "text-red-800 bg-red-200 px-2 py-1 rounded-md",
     Borrowed: "text-orange-800 bg-orange-200 px-2 py-1 rounded-md",
   };
 
-  const conditionStyles: CustomStylesProps = {
+  const conditionStyles: any = {
     New: "text-green-700 bg-green-100 px-2 py-1 rounded-md",
     Good: "text-blue-700 bg-blue-100 px-2 py-1 rounded-md",
     "Worn Out": "text-yellow-700 bg-yellow-100 px-2 py-1 rounded-md",
     Broken: "text-red-700 bg-red-100 px-2 py-1 rounded-md",
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading items.</div>;
 
   return (
     <div className="p-6 w-full h-full">
@@ -76,15 +74,15 @@ const ItemsList = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-8">
-        {items.map((item) => (
+        {items?.map((item: Item) => (
           <div
             key={item.id}
             className="bg-white _shadow rounded-lg overflow-hidden h-auto relative"
           >
             <div className="relative">
               <Image
-                src={item.images[0].src}
-                alt={item.name}
+                src={item?.images[0] || defaultImage}
+                alt={item?.name}
                 width={365}
                 height={364}
                 className="w-full h-64 object-cover"
