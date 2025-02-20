@@ -3,14 +3,28 @@
 import logo from "@/public/inventory.jpg";
 import { ChevronDown, Menu } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LogoutModal from "./LogoutModal";
 import NavModal from "../../../_components/common/NavModal";
 import { AnimatePresence } from "framer-motion";
+import Cookies from "js-cookie";
+import { decodeToken } from "@/utils/config/decode";
 
 const DashboardTopbar = () => {
   const [openNavModal, setOpenNavModal] = useState(false);
   const [openLogout, setOpenLogout] = useState(false);
+  // const token = Cookies.get("access_token");
+  // const user = token && decodeToken(token);
+  const [user, setUser] = useState<{ lastName: string; role: string } | null>(
+    null
+  );
+
+  useEffect(() => {
+    const token = Cookies.get("access_token");
+    if (token) {
+      setUser(decodeToken(token));
+    }
+  }, []);
 
   const toggleNavModal = () => {
     setOpenNavModal(!openNavModal);
@@ -41,8 +55,18 @@ const DashboardTopbar = () => {
           />
         </div>
         <div className="flex flex-col items-center">
-          <h1 className="font-bold text-xs sm:text-base ">Aphrodis</h1>
-          <p className="text-[12px] sm:text-sm">Admin</p>
+          {user ? (
+            <>
+              <h1 className="font-bold text-xs sm:text-base ">
+                {user?.lastName}
+              </h1>
+              <p className="text-[12px] sm:text-sm">
+                {user?.role?.toLowerCase()}
+              </p>
+            </>
+          ) : (
+            <p>Loading...</p>
+          )}
         </div>
         <div></div>
         <ChevronDown

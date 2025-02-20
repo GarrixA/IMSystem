@@ -4,15 +4,20 @@ import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { FiBox, FiUserCheck, FiUsers } from "react-icons/fi";
 import StatCard from "./StatCard";
+import { useAllItemsQuery } from "@/store/actions/item";
+import { useBorrowersQuery } from "@/store/actions/borrower";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
 const DashboardComponent = () => {
-  const totalItems = 120;
+  const { data: items } = useAllItemsQuery();
+  const { data: borrowerList = [] } = useBorrowersQuery();
+
+  const totalItems = items?.length;
   const totalUsers = 45;
-  const totalBorrowers = 30;
+  const totalBorrowers = borrowerList?.length;
 
   const borrowingStats = {
     labels: [

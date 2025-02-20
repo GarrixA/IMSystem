@@ -39,7 +39,7 @@ const Login = () => {
         toast.success(response?.message);
       }
     } catch (err: any) {
-      toast.error(err.data.message);
+      toast.error(err?.data?.message);
     }
   };
 
@@ -59,9 +59,9 @@ const Login = () => {
               className="w-full px-4 py-2 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               {...register("email")}
             />
-            {errors.email && (
+            {errors?.email && (
               <p className="text-red-600 text-sm mt-1">
-                {errors.email.message}
+                {errors?.email?.message}
               </p>
             )}
           </div>
@@ -76,7 +76,7 @@ const Login = () => {
             />
             {errors.password && (
               <p className="text-red-600 text-sm mt-1">
-                {errors.password.message}
+                {errors?.password?.message}
               </p>
             )}
           </div>

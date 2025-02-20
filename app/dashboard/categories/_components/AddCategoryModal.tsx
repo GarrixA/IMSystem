@@ -1,8 +1,11 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCategoriesMutation } from "@/store/actions/categories";
+import { toast } from "react-toastify";
 
 interface AddCategoryModalProps {
   onClose: () => void;
@@ -26,9 +29,18 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ onClose }) => {
     resolver: zodResolver(categorySchema),
   });
 
-  const onSubmit = (data: CategoryForm) => {
-    console.log("New Category:", data);
-    onClose();
+  const [addCategory, { isLoading, error }] = useCategoriesMutation();
+
+  const onSubmit = async (data: CategoryForm) => {
+    try {
+      const response = await addCategory({
+        categoryName: data.category,
+      }).unwrap();
+      toast.success(response?.data?.message);
+      onClose();
+    } catch (err: any) {
+      toast.error(err?.data?.message);
+    }
   };
 
   return (
@@ -49,12 +61,19 @@ const AddCategoryModal: React.FC<AddCategoryModalProps> = ({ onClose }) => {
               className="w-full mt-1 p-2 md:p-4 lg:p-2 border rounded-md focus:ring-2 focus:ring-blue-400"
               placeholder="Enter category name"
             />
-            {errors.category && (
+            {errors?.category && (
               <p className="text-red-500 text-sm md:text-base lg:text-sm mt-1">
-                {errors.category.message}
+                {errors?.category?.message}
               </p>
             )}
           </div>
+
+          {isLoading && <p className="text-gray-500">Adding category...</p>}
+          {error && (
+            <p className="text-red-500 text-sm">
+              Failed to add category. Please try again.
+            </p>
+          )}
 
           <div className="flex justify-end space-x-2">
             <button

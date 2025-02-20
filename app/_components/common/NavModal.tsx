@@ -4,14 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const menuItems = [
-  { name: "Dashboard", path: "/" },
-  { name: "Items", path: "/items" },
-  { name: "Categories", path: "/categories" },
-  { name: "Users", path: "/users" },
-  { name: "Borrowers", path: "/borrowers" },
-  { name: "History", path: "/history" },
-  { name: "Reports", path: "/reports" },
-  { name: "Logout", path: "/logout" },
+  { name: "Dashboard", path: "/dashboard" },
+  { name: "Items", path: "/dashboard/items" },
+  { name: "Categories", path: "/dashboard/categories" },
+  { name: "Users", path: "/dashboard/users" },
+  { name: "Borrowers", path: "/dashboard/borrowers" },
+  { name: "History", path: "/dashboard/history" },
+  { name: "Reports", path: "/dashboard/reports" },
+  { name: "Logout", path: "#" },
 ];
 
 const NavModal = ({ toggleNavModal }: { toggleNavModal: () => void }) => {
